@@ -26,6 +26,23 @@ class AuthService {
 
     userData.body.password = hashPassword;
 
+
+    return success(userData)
+  }
+
+  public async signIn(userData: HttpRequest): Promise<HttpResponse>{
+    const requiredFields = ['name', 'email', 'password']
+    for(let field of requiredFields){
+      if(!userData.body[field]){
+        return badRequest(`The propertie ${field} is missing`)
+      }
+    }
+
+    const emailVerification = this.emailValidator.emailValidator(userData.body.email)
+    if(!emailVerification){
+      return badRequest('E-mail is not valid')
+    }
+
     return success(userData)
   }
 }
