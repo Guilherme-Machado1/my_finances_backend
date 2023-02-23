@@ -1,28 +1,26 @@
-import JWTGenerator from "./JWTGenerator"
+import jwtResolver from "./JWTGenerator"
 
 
 
 describe('Jwt tests', () => {
   it('Should return a token ', async() => {
-    const jwt = new JWTGenerator();
     const dummyUser = {
       name: 'valid_name',
       email: 'valid_email@gmail.com'
     }
 
-    const token = jwt.generateJWT(dummyUser);
+    const token = jwtResolver.generateJWT(dummyUser);
     expect(token).toBeDefined();
   })
 
   it('Should return the user that will be decrypted from the token ', async() => {
-    const jwt = new JWTGenerator();
     const dummyUser = {
       name: 'valid_name',
       email: 'valid_email@gmail.com'
     }
 
-    const token = jwt.generateJWT(dummyUser);
-    const decoded = jwt.verify(token)
+    const token = jwtResolver.generateJWT(dummyUser);
+    const decoded = jwtResolver.verify(token)
     expect(decoded).toEqual({
       name: 'valid_name',
       email: 'valid_email@gmail.com',
@@ -32,8 +30,7 @@ describe('Jwt tests', () => {
   })
 
   it('Should return error if the token is not valid ', async() => {
-    const jwt = new JWTGenerator();
-    expect(() => jwt.verify('invalid token')).toThrow();
+    expect(() => jwtResolver.verify('invalid token')).toThrow();
 
   })
 })
