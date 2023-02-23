@@ -34,4 +34,5 @@ class JWTGenerator {
   }
 }
 
-export default JWTGenerator;
+const jwtResolver = new JWTGenerator()
+export default jwtResolver;
