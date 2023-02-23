@@ -9,6 +9,11 @@ class EncryptPassword implements EncrypterProtocol {
       const hashedPassword = await bcrypt.hash(password, this.salt)
       return hashedPassword;
   }
+
+  public async decrypt(password: string, passwordDb: string): Promise<boolean> {
+    const hashedPassword = await bcrypt.compare(password, passwordDb)
+    return hashedPassword;
+}
 }
 
 export default EncryptPassword;
