@@ -61,6 +61,26 @@ class User {
     }
 
   }
+
+
+  public deleteUserFromDb = async(user: any): Promise<any | undefined> => {
+    console.log(user)
+    const itemParams = {
+      TableName: this.table,
+      Key: {
+        'id': user[0].id,
+        'email': 'any_email@gmail.com'
+      }
+    };
+
+    try {
+      const deleteUser = await dynamoDB.delete(itemParams).promise();
+      return deleteUser;
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
 }
 const user = new User();
 export default user;
