@@ -1,6 +1,8 @@
 import EmailValidator from "../helper/EmailValidator";
 import EncryptPassword from "../helper/EncryptPassword";
 import AuthService from "./AuthService"
+import user from "../models/User";
+
 const createSut = () => {
   const encrypter = new EncryptPassword(10)
   const emailValidator = new EmailValidator()
@@ -8,6 +10,10 @@ const createSut = () => {
   return {sut};
 }
 describe('Auth tests', () => {
+  // afterEach(async() => {
+  //   await user.deleteUserFromDb()
+  // });
+
   it('should return status 400 if propertie name is missing', async() => {
     const { sut } = createSut()
     const dummyUser = {
@@ -98,14 +104,11 @@ describe('Auth tests', () => {
         password: 'any_password'
       }
     }
-    const expectedResponse = {
-      statusCode: 400,
-      body: 'The email is already registered'
-    }
-    jest.spyOn(sut, 'signUp').mockResolvedValue(expectedResponse);
     const signup = await sut.signUp(dummyUser);
     expect(signup.statusCode).toBe(400)
     expect(signup.body).toEqual('The email is already registered')
+    const userDb = await user.findUserByEmail(dummyUser.body.email)
+    await user.deleteUserFromDb(userDb)
   })
 
   it('should return status 200 if it is all good', async() => {
@@ -118,15 +121,7 @@ describe('Auth tests', () => {
       }
     }
 
-    const expectedResponse = {
-      statusCode: 200,
-      body: {id: 'any_id',name: 'any_name', email: 'any_email@gmail.com', password: 'any_password_hashed'}
-    };
-
-    const spySignUp = jest.spyOn(sut, 'signUp').mockResolvedValue(expectedResponse);
     const response = await sut.signUp(dummyUser);
-    expect(spySignUp).toHaveBeenCalledWith(dummyUser);
     expect(response.statusCode).toBe(200);
-    expect(response.body).toEqual({id: 'any_id',name: 'any_name', email: 'any_email@gmail.com', password: 'any_password_hashed'});
   })
 })
