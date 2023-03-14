@@ -1,26 +1,20 @@
 import jwt from 'jsonwebtoken'
 import * as dotenv from 'dotenv'
 import path from 'path'
+import { JwtProtocol } from '../protocols/JwtProtocol'
 dotenv.config({path: path.resolve(__dirname, '..', '..', '.env')})
 
 const secret: string = process.env.secret!
-
-interface JWTPayload {
-  email: string;
-  name: string;
-  exp: number;
-  iat: number;
-}
 
 interface UserInterface {
   email: string;
   name: string;
 }
-class JWTGenerator {
-  public generateJWT(user: UserInterface){
+class JWTGenerator implements JwtProtocol {
+  public generateJWT(email: string, name: string){
     const token = jwt.sign({
-      name: user.name,
-      email: user.email
+      name: name,
+      email: email
     }, secret, {
       expiresIn: '1d'
     }) as string;
