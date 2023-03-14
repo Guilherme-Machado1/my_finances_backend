@@ -20,10 +20,10 @@ class AuthController implements AuthControllerProtocol {
 
   }
 
-  public async signIn(req: Request, res: Response): Promise<void>{
+  public signIn = async(req: Request, res: Response): Promise<void> =>{
     const body: HttpRequest = req.body
-    const userSignUp = this.authService.signIn(body)
-    res.status(200).json({msg: 'funcionando signIn'})
+    const userSignIn = await this.authService.signIn(body)
+    res.status(200).json({msg: 'funcionando signIn', userSignIn})
 
   }
 }
