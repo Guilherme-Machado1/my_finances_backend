@@ -9,7 +9,7 @@ describe('Jwt tests', () => {
       email: 'valid_email@gmail.com'
     }
 
-    const token = jwtResolver.generateJWT(dummyUser);
+    const token = jwtResolver.generateJWT(dummyUser.email, dummyUser.name);
     expect(token).toBeDefined();
   })
 
@@ -19,7 +19,7 @@ describe('Jwt tests', () => {
       email: 'valid_email@gmail.com'
     }
 
-    const token = jwtResolver.generateJWT(dummyUser);
+    const token = jwtResolver.generateJWT(dummyUser.email, dummyUser.name);
     const decoded = jwtResolver.verify(token)
     expect(decoded).toEqual({
       name: 'valid_name',
