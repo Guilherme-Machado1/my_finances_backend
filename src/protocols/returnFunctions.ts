@@ -8,6 +8,14 @@ export const badRequest = (body: any): HttpResponse => {
 
 }
 
+export const unauthorized = (body: any): HttpResponse => {
+  return {
+    body: body,
+    statusCode: 401
+  }
+
+}
+
 export const success = (body: any): HttpResponse => {
   return {
     body: body,
