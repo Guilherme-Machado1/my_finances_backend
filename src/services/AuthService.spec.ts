@@ -2,18 +2,15 @@ import EmailValidator from "../helper/EmailValidator";
 import EncryptPassword from "../helper/EncryptPassword";
 import AuthService from "./AuthService"
 import user from "../models/User";
+import jwtResolver from "../helper/JWTGenerator";
 
 const createSut = () => {
   const encrypter = new EncryptPassword(10)
   const emailValidator = new EmailValidator()
-  const sut = new AuthService(encrypter, emailValidator);
+  const sut = new AuthService(encrypter, emailValidator, jwtResolver);
   return {sut};
 }
-describe('Auth tests', () => {
-  // afterEach(async() => {
-  //   await user.deleteUserFromDb()
-  // });
-
+describe('SignUp tests', () => {
   it('should return status 400 if propertie name is missing', async() => {
     const { sut } = createSut()
     const dummyUser = {
@@ -123,5 +120,72 @@ describe('Auth tests', () => {
 
     const response = await sut.signUp(dummyUser);
     expect(response.statusCode).toBe(200);
+  })
+})
+
+
+describe('SignIn tests', () => {
+  it('should return status 400 if propertie email is missing', async() => {
+    const { sut } = createSut()
+    const dummyUser = {
+      body: {
+        password: 'any_password'
+      }
+    }
+    const signup = await sut.signIn(dummyUser);
+    expect(signup.body).toEqual('The propertie email is missing')
+    expect(signup.statusCode).toBe(400)
+  })
+
+  it('should return status 400 if propertie password is missing', async() => {
+    const { sut } = createSut()
+    const dummyUser = {
+      body: {
+        email: 'any_email@gmail.com',
+      }
+    }
+    const signup = await sut.signIn(dummyUser);
+    expect(signup.body).toEqual('The propertie password is missing')
+    expect(signup.statusCode).toBe(400)
+  })
+
+  it('should return status 400 if email does not exists in the database', async() => {
+    const { sut } = createSut()
+    const dummyUser = {
+      body: {
+        email: 'email@gmail.com',
+        password: 'any_password'
+      }
+    }
+    const signup = await sut.signIn(dummyUser);
+    expect(signup.body).toEqual('The email does not exists')
+    expect(signup.statusCode).toBe(400)
+  })
+
+  it('should return status 401 if the password is different from the password sent trough the body', async() => {
+    const { sut } = createSut()
+    const dummyUser = {
+      body: {
+        email: 'any_email@gmail.com',
+        password: 'password'
+      }
+    }
+    const signup = await sut.signIn(dummyUser);
+
+    expect(signup.body).toEqual('The password is incorrect')
+    expect(signup.statusCode).toBe(401)
+  })
+
+  it('should return 200 and the JWT token', async() => {
+    const { sut } = createSut()
+    const dummyUser = {
+      body: {
+        email: 'any_email@gmail.com',
+        password: 'any_password'
+      }
+    }
+    const signup = await sut.signIn(dummyUser);
+    console.log(signup)
+    expect(signup.statusCode).toBe(200)
   })
 })
