@@ -64,7 +64,6 @@ class User {
 
 
   public deleteUserFromDb = async(user: any): Promise<any | undefined> => {
-    console.log(user)
     const itemParams = {
       TableName: this.table,
       Key: {
